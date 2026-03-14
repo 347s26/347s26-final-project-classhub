@@ -1,0 +1,7 @@
+.venv/
+hub/__pycache__
+hub/migrations/__pycache__
+classhub/__pycache__
+.vscode/
+*.sqlite3
+.DS_Store
