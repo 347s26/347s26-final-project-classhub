@@ -17,11 +17,13 @@ class Course(models.Model):
 
 class CourseContent(models.Model):
     course: models.ForeignKey[Course] = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
-    parent: models.ForeignKey["CourseContent"] = models.ForeignKey("CourseContent", on_delete=models.DO_NOTHING, null=True)
+    parent: models.ForeignKey["CourseContent"] = models.ForeignKey("CourseContent", on_delete=models.DO_NOTHING, null=True, blank=True)
+    
+    assignments: models.ManyToManyField["Assignment", "Assignment"] = models.ManyToManyField("Assignment")
 
     @override
     def __repr__(self) -> str:
-        return f"CourseContent{{course={self.course}, parent={self.parent}}}"
+        return f"CourseContent{{course={self.course}, parent={self.parent}, assignments={self.assignments}}}"
 
     @override
     def __str__(self) -> str:
@@ -37,21 +39,19 @@ class CourseInstance(models.Model):
         FALL = 3, _("FALL")
 
     course_content: models.ForeignKey[CourseContent] = models.ForeignKey(CourseContent, on_delete=models.CASCADE, null=False)
-    semester: models.CharField[Semester, Semester] = models.CharField(max_length=2, choices=Semester.choices, null=False)
+    semester: models.IntegerField[Semester, Semester] = models.IntegerField(choices=Semester.choices, null=False)
     year: models.IntegerField[int, int] = models.IntegerField(null=False)
     section_number: models.IntegerField[int, int] = models.IntegerField(null=False)
 
+    instructors: models.ManyToManyField[User, User] = models.ManyToManyField(User)
+
     @override
     def __repr__(self) -> str:
-        return f"CourseInstance{{course_content={self.course_content}, semester={self.semester}, year={self.year}, section_number={self.section_number}}}"
+        return f"CourseInstance{{course_content={self.course_content}, semester={self.semester}, year={self.year}, section_number={self.section_number}, instructors={self.instructors}}}"
 
     @override
     def __str__(self) -> str:
         return repr(self)
-
-class CourseInstanceInstructorJunction(models.Model):
-    course_instance: models.ForeignKey[CourseInstance] = models.ForeignKey(CourseInstance, on_delete=models.CASCADE, null=False)
-    instructor: models.ForeignKey[User] = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
 
 class Assignment(models.Model):
     title: models.CharField[str, str] = models.CharField(max_length=200, null=False)
@@ -64,10 +64,6 @@ class Assignment(models.Model):
     @override
     def __str__(self) -> str:
         return repr(self)
-
-class AssignmentCourseContentJunction(models.Model):
-    assignment: models.ForeignKey[Assignment] = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
-    course_content: models.ForeignKey[CourseContent] = models.ForeignKey(CourseContent, on_delete=models.CASCADE, null=False)
 
 class AssignmentInstance(models.Model):
     assignment: models.ForeignKey[Assignment] = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
