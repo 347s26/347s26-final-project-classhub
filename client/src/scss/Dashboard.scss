@@ -1,5 +1,18 @@
 @import "bootstrap/scss/bootstrap";
+@import "./App.scss";
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/utilities/api";
 
 .cards {
     @extend .d-flex, .flex-wrap;
 }
+
+.card {
+    @extend .p-4, .border, .rounded;
+    cursor: pointer;
+}
+
+.card:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+

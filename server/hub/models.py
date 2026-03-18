@@ -1,3 +1,4 @@
+import datetime
 from typing import override
 from django.db import models
 from django.contrib.auth.models import User
@@ -18,6 +19,8 @@ class Course(models.Model):
 class CourseContent(models.Model):
     course: models.ForeignKey[Course] = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
     parent: models.ForeignKey["CourseContent"] = models.ForeignKey("CourseContent", on_delete=models.DO_NOTHING, null=True, blank=True)
+    overview: models.CharField[str, str] = models.CharField(max_length=10000, null=True)
+    syllabus: models.CharField[str, str] = models.CharField(max_length=50000, null=True)
     
     assignments: models.ManyToManyField["Assignment", "Assignment"] = models.ManyToManyField("Assignment")
 
@@ -56,21 +59,18 @@ class CourseInstance(models.Model):
 class Assignment(models.Model):
     title: models.CharField[str, str] = models.CharField(max_length=200, null=False)
     description: models.TextField[str, str] = models.TextField(max_length=5000, null=True)
+    due_date: models.DateTimeField[datetime.datetime, datetime.datetime] = models.DateTimeField(null=True, blank=True)
 
     @override
     def __repr__(self) -> str:
-        return f"Assignment{{title={self.title}, description={self.description}}}"
+        return f"Assignment{{title={self.title}, description={self.description}, due_date={self.due_date}}}"
 
     @override
     def __str__(self) -> str:
         return repr(self)
 
-class AssignmentInstance(models.Model):
-    assignment: models.ForeignKey[Assignment] = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
-    description: models.TextField[str, str] = models.TextField(max_length=5000, null=True)
-
 class Integration(models.Model):
-    assignment_instance: models.ForeignKey[AssignmentInstance] = models.ForeignKey(AssignmentInstance, on_delete=models.CASCADE, null=False)
+    assignment: models.ForeignKey[Assignment] = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
 
 class CanvasIntegration(Integration):
     external_id: models.IntegerField[int, int] = models.IntegerField(null=False)

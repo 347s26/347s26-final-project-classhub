@@ -18,3 +18,35 @@
 .default-main {
     @extend .main;
 }
+
+.title {
+    @extend .text-center, .p-lg-3, .p-2, .pt-3, .h1, .m-0;
+    cursor: pointer;
+}
+
+.nav-btn {
+    @extend .btn;
+    border-radius: 0px;
+}
+
+.nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.edit-btn {
+    @extend .btn, .border;
+}
+
+.edit-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.save-btn {
+    @extend .btn, .btn-success;
+}
+
+.code-textarea {
+    @extend .form-control, .mb-3;
+    font-family: "IBM Plex Mono", "Courier New", Courier, monospace;
+    resize: none;
+}
