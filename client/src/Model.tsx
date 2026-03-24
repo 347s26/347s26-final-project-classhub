@@ -69,18 +69,6 @@ export interface RawCourseContent extends RawResponse {
     };
 }
 
-interface UploadCourseContent {
-    data: [
-        {
-            course_id: number | null;
-            parent_id: number | null;
-            assignment_ids: number[] | null;
-            overview: string | null;
-            syllabus: string | null;
-        }
-    ];
-}
-
 export class CourseContent extends Model {
     id: number;
     private course_id: number;
@@ -142,27 +130,22 @@ export class CourseContent extends Model {
         return new CourseContent(raw);
     }
 
-    protected asUpload(): BodyInit {
-        const upload = {
-            data: [
-                {
-                    course_id: this.course_id,
-                    parent_id: this.parent_id,
-                    assignment_ids: this.assignment_ids,
-                    overview: this.overview,
-                    syllabus: this.syllabus
-                }
-            ]
-        } as UploadCourseContent;
-        return JSON.stringify(upload);
-    }
-
     async save(): Promise<boolean> {
         try
         {
             const resp = await fetch(`${API_URL}/course/content/${this.id}`, {
                 method: "PUT",
-                body: this.asUpload()
+                body: JSON.stringify({
+                    data: [
+                        {
+                            course_id: this.course_id,
+                            parent_id: this.parent_id,
+                            assignment_ids: this.assignment_ids,
+                            overview: this.overview,
+                            syllabus: this.syllabus
+                        }
+                    ]
+                })
             });
             if (!resp.ok)
                 return false;
@@ -215,7 +198,29 @@ export class Assignment extends Model {
     }
 
     async save(): Promise<boolean> {
-        return false;
+        try
+        {
+            const resp = await fetch(`${API_URL}/assignment/${this.id}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    data: [
+                        {
+                            id: this.id,
+                            title: this.title,
+                            description: this.description,
+                            due_date: this.due_date?.toISOString()
+                        }
+                    ]
+                })
+            });
+            if (!resp.ok)
+                return false;
+        }
+        catch
+        {
+            return false;
+        }
+        return true;
     }
 }
 

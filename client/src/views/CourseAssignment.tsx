@@ -4,6 +4,8 @@ import { CourseView } from "./Course";
 import { CourseAssignmentListView } from "./CourseAssignmentList";
 import { Assignment, CourseInstance } from "../Model";
 import { ErrorView } from "./Error";
+import { EditableMarkdown } from "../components/EditableMarkdown";
+import { EditableText } from "../components/EditableText";
 
 export class CourseAssignmentView extends View {
     id: number;
@@ -26,7 +28,8 @@ export class CourseAssignmentView extends View {
 
         return (
             <>
-                <h2>{assignment.title}</h2>
+                <EditableText name="Title" content={assignment.title} inline={false} className="h2" save={async (c: string) => { assignment.title = c; return await assignment.save(); }} />
+                <EditableMarkdown name="Description" content={assignment.description} save={async (c: string) => { assignment.description = c; return await assignment.save(); }} />
             </>
         );
     }

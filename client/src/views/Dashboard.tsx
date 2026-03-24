@@ -52,7 +52,10 @@ export class DashboardView extends View
 
         return (
             <>
-                <h2 className="pb-3">Courses</h2>
+                <div className="d-flex align-items-center mb-4">
+                    <h2 className="mb-0">Courses</h2>
+                    <button className="edit-btn ms-3">New</button>
+                </div>
                 <div className="cards">
                     {courseRenders}
                 </div>

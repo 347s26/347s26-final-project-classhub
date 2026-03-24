@@ -35,12 +35,12 @@ function App() {
     return (
         <>
             <main className="default-main">
-                <div className="container-fluid">
-                    <div className="row">
-                        <div className="col-lg-2 p-0 border-end">
+                <div className="container-fluid h-lg-100">
+                    <div className="row h-lg-100">
+                        <div className="sidebar col-lg-2 h-lg-100 p-0 border-end">
                             <div className="d-flex flex-column justify-content-center">
                                 <h1 className="title" onClick={() => View.redirect(DashboardView.getInstance())}>CH</h1>
-                                {Array.from(links).map(([n, fn]) => <button className="nav-btn" onClick={fn}>{n}</button>)}
+                                {Array.from(links).map(([name, navigate]) => <button className="nav-btn" onClick={navigate}>{name}</button>)}
                                 <button className="nav-btn">Settings</button>
                             </div>
                         </div>

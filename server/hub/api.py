@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from ninja import NinjaAPI, Schema
 from .models import Assignment, Course, CourseContent, CourseInstance
@@ -66,4 +67,30 @@ def put_content(request: WSGIRequest, pk: int, upload: UploadCourseContent):
     if data.syllabus is not None:
         content.syllabus = data.syllabus
     content.save()
+    return dict[str, None]({})
+
+class UploadAssignmentItem(Schema):
+    title: str | None
+    description: str | None
+    due_date: str | None
+
+class UploadAssignment(Schema):
+    data: list[UploadAssignmentItem]
+
+@api.put("/assignment/{pk}")
+def put_assignment(request: WSGIRequest, pk: int, upload: UploadAssignment):
+    try:
+        assignment = Assignment.objects.get(id=pk)
+    except models.Model.DoesNotExist:
+        return 404, { "message": f"No Assignment object with an ID {pk} exists" }
+    if len(upload.data) != 1:
+        return 400, { "message": "Expected one data item in request body" }
+    data = upload.data[0]
+    if data.title is not None:
+        assignment.title = data.title
+    if data.description is not None:
+        assignment.description = data.description
+    if data.due_date is not None:
+        assignment.due_date = datetime.datetime.fromisoformat(data.due_date)
+    assignment.save()
     return dict[str, None]({})
