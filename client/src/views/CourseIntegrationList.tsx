@@ -25,7 +25,8 @@ export function CourseIntegrationListView() {
     dispatch(setRoutes(new Map<string, string>([
         ["Overview", `/courses/${id}`],
         ["Assignments", `/courses/${id}/assignments`],
-        ["Integrations", `/courses/${id}/integrations`]
+        ["Integrations", `/courses/${id}/integrations`],
+        ["Settings", `/courses/${id}/settings`]
     ])));
 
     const navigate = useNavigate();

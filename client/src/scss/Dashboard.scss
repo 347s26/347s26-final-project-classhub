@@ -8,7 +8,7 @@
 }
 
 .course-card {
-    @extend .p-4, .border, .rounded, .button-link, .card;
+    @extend .p-4, .border, .rounded, .button-link, .card, .mb-3, .me-3;
     cursor: pointer;
 }
 

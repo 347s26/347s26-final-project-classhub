@@ -12,6 +12,7 @@ import { CourseAssignmentListView } from "./views/CourseAssignmentList";
 import { LoginView } from "./views/Login";
 import { SignupView } from "./views/Signup";
 import { LogoutView } from "./views/Logout";
+import { CourseSettingsView } from "./views/CourseSettings";
 
 function Layout() {
     return (
@@ -23,6 +24,15 @@ function Layout() {
                         <div className="col-lg-10 p-lg-5 p-4">
                             <Outlet />
                         </div>
+                    </div>
+                </div>
+                <div className="toast-container position-fixed bottom-0 end-0 p-3">
+                    <div id="global-toast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div className="toast-header">
+                            <strong className="me-auto" id="global-toast-title"></strong>
+                            <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div className="toast-body" id="global-toast-content"></div>
                     </div>
                 </div>
             </main>
@@ -39,6 +49,7 @@ function App() {
                     <Route path="courses">
                         <Route index element={<NotFoundView />} />
                         <Route path=":id" element={<CourseView />} />
+                        <Route path=":id/settings" element={<CourseSettingsView />} />
                         <Route path=":id/assignments" element={<CourseAssignmentListView />} />
                         <Route path=":id/assignments/:aid" element={<CourseAssignmentView />} />
                         <Route path=":id/integrations" element={<CourseIntegrationListView />} />

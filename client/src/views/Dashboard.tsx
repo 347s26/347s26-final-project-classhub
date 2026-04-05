@@ -46,7 +46,7 @@ export function DashboardView() {
                             </div>
                         </>
                     );
-                }) ?? <div>Unable to fetch course list</div>}
+                }) ?? <div>Loading...</div>}
             </div>
         </>
     )

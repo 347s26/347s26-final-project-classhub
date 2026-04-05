@@ -107,3 +107,14 @@ def post_course(request: WSGIRequest):
             course
         ]
     }
+
+@api.delete("/course/{pk}")
+def delete_course(request: WSGIRequest, pk: int):
+    try:
+        course = CourseInstance.objects.get(id=pk)
+    except models.Model.DoesNotExist:
+        return 404, { "message": f"No CourseInstance object with an ID {pk} exists" }
+    amt, fields = course.delete()  # pyright: ignore[reportUnusedVariable]
+    if amt == 0:
+        return 404, { "message": f"No CourseInstance object with an ID {pk} exists" }
+    return dict[str, None]({})

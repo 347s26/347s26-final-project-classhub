@@ -57,7 +57,8 @@ export function CourseAssignmentListView() {
     dispatch(setRoutes(new Map<string, string>([
         ["Overview", `/courses/${id}`],
         ["Assignments", `/courses/${id}/assignments`],
-        ["Integrations", `/courses/${id}/integrations`]
+        ["Integrations", `/courses/${id}/integrations`],
+        ["Settings", `/courses/${id}/settings`]
     ])));
 
     const [course, setCourse] = useState<CourseInstance | null>(null);

@@ -82,6 +82,33 @@ export class CourseInstance extends Model {
         return instance;
     }
 
+    static async make(course_content_id: number, semester: Semester, year: number, section_number: number): Promise<CourseInstance | null> {
+        const resp = await fetch(`${API_URL}/course`, {
+            method: "POST",
+            body: JSON.stringify({
+                course_content: course_content_id,
+                semester: semester,
+                year: year,
+                section_number: section_number 
+            })
+        });
+
+        if (!resp.ok)
+            return null;
+
+        const instance = new CourseInstance((await resp.json())["data"][0] as RawCourseInstance);
+        this.CACHE.set(instance.id, instance);
+        return instance;
+    }
+
+    async delete(): Promise<boolean> {
+        const resp = await fetch(`${API_URL}/course/${this.id}`, {
+            method: "DELETE"
+        });
+
+        return resp.ok;
+    }
+
     async save(): Promise<boolean> {
         return false;
     }

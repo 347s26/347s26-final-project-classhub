@@ -18,7 +18,7 @@
  - [ ] Create functionality works - Users can add new records through the web interface
  - [x] Read functionality works - Users can view lists and details of records
  - [x] Update functionality works - Users can edit existing records through the web interface
- - [ ] Delete functionality works - Users can remove records through the web interface
+ - [x] Delete functionality works - Users can remove records through the web interface
  - [x] Application has user login/logout - Users can sign in and out of the system
  - [x] Application enforces authentication - Some pages require login to access
  - [ ] Application has basic security measures - CSRF protection and secure forms
