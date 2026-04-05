@@ -1,6 +1,8 @@
 import { useDispatch } from "react-redux";
 import { setRoutes } from "../components/Sidebar";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { probeEffect } from "./Views";
+import { useEffect } from "react";
 
 interface CourseIntegrationListParams {
     id: number;
@@ -25,6 +27,10 @@ export function CourseIntegrationListView() {
         ["Assignments", `/courses/${id}/assignments`],
         ["Integrations", `/courses/${id}/integrations`]
     ])));
+
+    const navigate = useNavigate();
+
+    useEffect(probeEffect(navigate), []);
 
     return <></>;
 }

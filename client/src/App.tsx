@@ -10,6 +10,8 @@ import { CourseAssignmentView } from "./views/CourseAssignment";
 import { CourseIntegrationListView } from "./views/CourseIntegrationList";
 import { CourseAssignmentListView } from "./views/CourseAssignmentList";
 import { LoginView } from "./views/Login";
+import { SignupView } from "./views/Signup";
+import { LogoutView } from "./views/Logout";
 
 function Layout() {
     return (
@@ -41,9 +43,11 @@ function App() {
                         <Route path=":id/assignments/:aid" element={<CourseAssignmentView />} />
                         <Route path=":id/integrations" element={<CourseIntegrationListView />} />
                     </Route>
+                    <Route path="logout" element={<LogoutView />} />
                     <Route path="*" element={<NotFoundView />} />
                 </Route>
                 <Route path="login" element={<LoginView />} />
+                <Route path="signup" element={<SignupView />} />
             </Routes>
         </Provider>
     );

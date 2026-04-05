@@ -28,7 +28,7 @@ export class CourseInstance extends Model {
     semester: Semester;
     year: number;
     section_number: number;
-    private instructor_ids: number[]
+    private instructor_ids: number[];
     // private instructors: Instructor[];
 
     constructor(raw: RawCourseInstance) {

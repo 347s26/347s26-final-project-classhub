@@ -35,6 +35,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173"
 ]
 
+CORS_ALLOW_HEADERS = [
+    "x-session-token"
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,6 +52,7 @@ INSTALLED_APPS = [
     'hub.apps.HubConfig',
     'allauth',
     'allauth.account',
+    'allauth.headless',
     'allauth.socialaccount',
 ]
 
@@ -141,3 +146,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+HEADLESS_FRONTEND_URLS = {
+    "account_confirm_email": "http://localhost:5173/signup/confirm/{key}",
+    "account_reset_password_from_key": "http://localhost:5173/login/reset/{key}",
+    "account_signup": "http://localhost:5173/signup",
+}
+
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*"]
+ACCOUNT_LOGIN_METHODS = {"email"}

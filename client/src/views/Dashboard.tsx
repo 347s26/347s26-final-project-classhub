@@ -5,11 +5,14 @@ import { useDispatch } from "react-redux";
 import { setRoutes } from "../components/Sidebar";
 import { CourseInstance, Semester } from "../models/CourseInstance";
 import { getCourses } from "../models/Models";
+import { probeEffect } from "./Views";
 
 export function DashboardView() {
     const [courses, setCourses] = useState<CourseInstance[] | null>(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    useEffect(probeEffect(navigate), []);
 
     dispatch(setRoutes(new Map<string, string>()));
 

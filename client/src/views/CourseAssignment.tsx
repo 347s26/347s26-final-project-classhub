@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { EditableMarkdown } from "../components/EditableMarkdown";
 import { EditableText } from "../components/EditableText";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
 import { setRoutes } from "../components/Sidebar";
 import { CourseInstance } from "../models/CourseInstance";
 import { Assignment } from "../models/Assignment";
+import { probeEffect } from "./Views";
 
 export interface CourseAssignmentParams {
     id: number;
@@ -31,6 +32,10 @@ export function CourseAssignmentView() {
         ["Assignments", `/courses/${id}/assignments`],
         ["Integrations", `/courses/${id}/integrations`]
     ])));
+
+    const navigate = useNavigate();
+
+    useEffect(probeEffect(navigate), []);
 
     const [course, setCourse] = useState<CourseInstance | null>(null);
     const [assignment, setAssignment] = useState<Assignment | null>(null); 

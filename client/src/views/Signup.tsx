@@ -1,20 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../scss/Login.scss"
-import { login } from "../models/Models";
+import { signup } from "../models/Models";
 import * as bootstrap from 'bootstrap'
 import { useNavigate } from "react-router";
 
-export function LoginView() {
+export function SignupView() {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (localStorage.getItem("session"))
-            navigate("/");
-        return () => {};
-    }, []);
-
-    const toastID = `login-toast`;
-    const toastContentID = `login-toast-content`;
+    const toastID = `signup-toast`;
+    const toastContentID = `signup-toast-content`;
 
     const [emailAddress, setEmailAddress] = useState("");
     const [password, setPassword] = useState("");
@@ -36,8 +30,8 @@ export function LoginView() {
             return;
         }
         ev.preventDefault();
-        console.log("logging up yo");
-        const result = await login(emailAddress, password);
+        console.log("signing up yo");
+        const result = await signup(emailAddress, password);
         if (!result.token)
         {
             const err = result.errors[0].message;
@@ -46,8 +40,6 @@ export function LoginView() {
             toast?.show();
             return;
         }
-        localStorage.setItem("session", result.token);
-        navigate("/");
     }
 
     return (
@@ -63,8 +55,8 @@ export function LoginView() {
                     <input type="password" className="form-control" id="pass-input" value={password} onChange={changePassword} />
                 </div>
                 <div className="d-flex justify-content-between">
-                    <button type="submit" className="btn btn-primary">Login</button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate("/signup")}>Need an account?</button>
+                    <button type="submit" className="btn btn-primary">Sign Up</button>
+                    <button type="button" className="btn btn-secondary" onClick={() => navigate("/login")}>Got an account?</button>
                 </div>
             </form>
             <div className="toast-container position-fixed bottom-0 end-0 p-3">

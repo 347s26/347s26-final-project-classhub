@@ -1,6 +1,8 @@
 import datetime
 from django.db import models
 from ninja import NinjaAPI, Schema
+from ninja.security import django_auth
+from allauth.headless.contrib.ninja.security import x_session_token_auth  # pyright: ignore[reportMissingTypeStubs]
 from .models import Assignment, Course, CourseContent, CourseInstance
 from django.core import serializers
 from django.core.handlers.wsgi import WSGIRequest
@@ -12,9 +14,10 @@ api = NinjaAPI()
 def test(request: WSGIRequest, a: int, b: int):  # pyright: ignore[reportUnusedParameter]
     return { "data": a + b }
 
-@api.get("/courses")
-def courses(request: WSGIRequest):  # pyright: ignore[reportUnusedParameter]
-    courses = CourseInstance.objects.filter(instructors__username__exact="me")
+@api.get("/courses", auth=[django_auth, x_session_token_auth])
+def courses(request: WSGIRequest):
+    uid: int = request.auth.id   # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue, reportUnknownVariableType]
+    courses = CourseInstance.objects.filter(instructors__id__exact=uid)
     return { "data": json.loads(serializers.serialize("json", courses)) }  # pyright: ignore[reportAny]
 
 @api.get("/course/{pk}")

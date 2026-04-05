@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import { useDispatch } from "react-redux";
 import { setRoutes } from "../components/Sidebar";
 import { CourseInstance } from "../models/CourseInstance";
+import { probeEffect } from "./Views";
 
 function fmtDate(date: Date): string {
     return date.toLocaleDateString(undefined, {
@@ -50,6 +51,8 @@ export function CourseAssignmentListView() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    useEffect(probeEffect(navigate), []);
 
     dispatch(setRoutes(new Map<string, string>([
         ["Overview", `/courses/${id}`],

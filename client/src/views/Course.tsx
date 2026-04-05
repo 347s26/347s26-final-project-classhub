@@ -4,8 +4,9 @@ import { EditableMarkdown } from "../components/EditableMarkdown";
 import { EditableText } from "../components/EditableText";
 import { useDispatch } from "react-redux";
 import { setRoutes } from "../components/Sidebar";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { CourseInstance, Semester } from "../models/CourseInstance";
+import { probeEffect } from "./Views";
 
 interface CourseParams {
     id: number | null;
@@ -30,6 +31,10 @@ export function CourseView() {
         ["Assignments", `/courses/${id}/assignments`],
         ["Integrations", `/courses/${id}/integrations`]
     ])));
+
+    const navigate = useNavigate();
+
+    useEffect(probeEffect(navigate), []);
 
     const [course, setCourse] = useState<CourseInstance | null>(null);
 

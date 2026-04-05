@@ -39,7 +39,8 @@ export function SidebarView() {
                 <div className="d-flex flex-column justify-content-center">
                     <h1 onClick={() => navigate("/")} className="title">CH</h1>
                     {Array.from(routes).map(([name, route]) => <Link to={route} className="nav-btn">{name}</Link>)}
-                    <button className="nav-btn">Settings</button>
+                    <button className="nav-btn">Preferences</button>
+                    <button className="nav-btn" onClick={() => navigate("/logout")}>Logout</button>
                 </div>
             </div>
         </>
