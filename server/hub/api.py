@@ -94,3 +94,13 @@ def put_assignment(request: WSGIRequest, pk: int, upload: UploadAssignment):
         assignment.due_date = datetime.datetime.fromisoformat(data.due_date)
     assignment.save()
     return dict[str, None]({})
+
+@api.post("/course")
+def post_course(request: WSGIRequest):
+    course = CourseInstance.objects.create()
+    course.save()
+    return {
+        "data": [
+            course
+        ]
+    }

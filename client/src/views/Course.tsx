@@ -1,46 +1,68 @@
-import { type JSX } from "react";
-import { View } from "./View";
-import { CourseInstance, Semester } from "../Model";
+import { useEffect, useState } from "react";
 import "../scss/Course.scss";
-import { CourseAssignmentListView } from "./CourseAssignmentList";
 import { EditableMarkdown } from "../components/EditableMarkdown";
 import { EditableText } from "../components/EditableText";
+import { useDispatch } from "react-redux";
+import { setRoutes } from "../components/Sidebar";
+import { useParams } from "react-router";
+import { CourseInstance, Semester } from "../models/CourseInstance";
 
-export class CourseView extends View {
-    id: number;
+interface CourseParams {
+    id: number | null;
+}
 
-    constructor(id: number) {
-        super("Course", `/courses/${id}`, CourseView.links(id));
-        this.id = id;
-    }
-    
-    async render(): Promise<JSX.Element> {
-        const course = await CourseInstance.from(this.id, true);
-        const detail = await course?.getCourse();
-        const content = await course?.getCourseContent();
-
-        if (!course || !detail || !content)
-            return <p>Ur bad</p>;
-
-        return (
-            <>
-                <EditableText name="Title" content={detail.title} inline={false} className="h2 fst-italic" save={(async (c: string) => false)} />
-                <h3 className="fs-4">
-                    <EditableText name="Department Code" content={detail.department_code} inline={true} className="" save={(async (c: string) => false)} />
-                    &nbsp;
-                    <EditableText name="Course Number" content={detail.number.toString()} inline={true} className="" save={(async (c: string) => false)} />
-                    , {Semester[course.semester]} {course.year} (Section {course.section_number})
-                </h3>
-                <EditableMarkdown name="Overview" content={content.overview} save={async (c: string) => { content.overview = c; return await content.save(); }} />
-                <EditableMarkdown name="Syllabus" content={content.syllabus} save={async (c: string) => { content.syllabus = c; return await content.save(); }} />
-            </>
-        );
+export function CourseView() {
+    function getParams() {
+        const { id } = useParams();
+        return {
+            id: id ? parseInt(id) : null
+        } as CourseParams;
     }
 
-    private static links(id: number): Map<string, () => void> {
-        const links = new Map<string, () => void>();
-        links.set("Overview", () => View.redirect(new CourseView(id)));
-        links.set("Assignments", () => View.redirect(new CourseAssignmentListView(id)));
-        return links;
-    }
+    const { id } = getParams();
+    if (!id)
+        return <div>No course ID provided</div>;
+
+    const dispatch = useDispatch();
+
+    dispatch(setRoutes(new Map<string, string>([
+        ["Overview", `/courses/${id}`],
+        ["Assignments", `/courses/${id}/assignments`],
+        ["Integrations", `/courses/${id}/integrations`]
+    ])));
+
+    const [course, setCourse] = useState<CourseInstance | null>(null);
+
+    useEffect(() => {
+        async function _() {
+            const course = await CourseInstance.from(id ?? 0, true);
+            if (!await course?.getCourse())
+                return;
+            if (!await course?.getCourseContent())
+                return;
+            setCourse(course);
+        }
+        _();
+        return () => {};
+    }, []);
+
+    const detail = course?.getCourseSync();
+    const content = course?.getCourseContentSync();
+
+    if (!course || !detail || !content)
+        return <div>Unable to retrieve course</div>;
+
+    return (
+        <>
+            <EditableText name="Title" content={detail.title} inline={false} className="h2 fst-italic" save={(async (_: string) => false)} />
+            <h3 className="fs-4">
+                <EditableText name="Department Code" content={detail.department_code} inline={true} className="" save={(async (_: string) => false)} />
+                &nbsp;
+                <EditableText name="Course Number" content={detail.number.toString()} inline={true} className="" save={(async (_: string) => false)} />
+                , {Semester[course.semester]} {course.year} (Section {course.section_number})
+            </h3>
+            <EditableMarkdown name="Overview" content={content.overview} save={async (c: string) => { content.overview = c; return await content.save(); }} />
+            <EditableMarkdown name="Syllabus" content={content.syllabus} save={async (c: string) => { content.syllabus = c; return await content.save(); }} />
+        </>
+    );
 }

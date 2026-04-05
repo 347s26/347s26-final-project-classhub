@@ -3,16 +3,16 @@
 @import "bootstrap/scss/utilities";
 @import "bootstrap/scss/utilities/api";
 
-.cards {
+.course-cards {
     @extend .d-flex, .flex-wrap;
 }
 
-.card {
-    @extend .p-4, .border, .rounded;
+.course-card {
+    @extend .p-4, .border, .rounded, .button-link, .card;
     cursor: pointer;
 }
 
-.card:hover {
+.course-card:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 

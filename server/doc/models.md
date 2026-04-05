@@ -17,11 +17,15 @@
     * Course Content (fk: many referenced CourseContent, many Assignment here)
     * Title
     * Description
-* AssignmentInstance
-    * Assignment (fk: 1 referenced Assignment, many AssignmentInstance here)
-    * Description (optional override from Assignment)
-* Integration
-    * Assignment Instance (fk: 1 referenced AssignmentInstance, many Integration here)
-* CanvasIntegration
-    * Integration (fk: 1 referenced Integration, 1 CanvasIntegration here)
+* AssignmentIntegration
+    * Assignment (fk: 1 referenced Assignment, many AssignmentIntegration here)
+    * Course Instance (fk: 1 referenced CourseInstance, many AssignmentIntegration here)
+* CanvasAssignmentIntegration
+    * Assignment Integration (fk: 1 referenced AssignmentIntegration, 1 CanvasAssignmentIntegration here)
     * Canvas Assignment ID
+* CourseIntegration
+    * Course Content (fk: 1 referenced CourseContent, many CourseIntegration here)
+    * Course Instance (fk: 1 referenced CourseInstance, many CourseIntegration here)
+* CanvasCourseIntegration
+    * Integration (fk: 1 referenced CourseIntegration, CanvasCourseIntegration here)
+    * Canvas Course ID

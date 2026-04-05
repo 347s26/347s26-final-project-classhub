@@ -1,51 +1,25 @@
-import { useEffect, useState, type JSX } from "react"
 import "./scss/App.scss"
-import { setViewUpdater, View } from "./views/View"
 import { DashboardView } from "./views/Dashboard";
+import { Provider } from "react-redux";
+import store from "./store";
+import { Outlet, Route, Routes } from "react-router";
+import { NotFoundView } from "./views/NotFound";
+import { SidebarView } from "./components/Sidebar";
+import { CourseView } from "./views/Course";
+import { CourseAssignmentView } from "./views/CourseAssignment";
+import { CourseIntegrationListView } from "./views/CourseIntegrationList";
+import { CourseAssignmentListView } from "./views/CourseAssignmentList";
+import { LoginView } from "./views/Login";
 
-function App() {
-    // const token = localStorage.getItem("session-token");
-
-    // if (!token) {
-    //     return (
-    //         <>
-    //             <main className="login-main">
-    //                 <LoginTitle />
-    //                 <LoginDialog />
-    //             </main>
-    //         </>
-    //     );
-    // }
-
-    const [view, setView] = useState<View>(DashboardView.getInstance());
-    setViewUpdater(setView);
-    const [body, setBody] = useState<JSX.Element | null>(null);
-    const [links, setLinks] = useState<Map<string, () => void>>(new Map());
-
-    useEffect(() => {
-        async function _() {
-            const body = await view.render();
-            setBody(body);
-            setLinks(view.links);
-        }
-
-        _();
-    }, [view]);
-
+function Layout() {
     return (
         <>
             <main className="default-main">
                 <div className="container-fluid h-lg-100">
                     <div className="row h-lg-100">
-                        <div className="sidebar col-lg-2 h-lg-100 p-0 border-end">
-                            <div className="d-flex flex-column justify-content-center">
-                                <h1 className="title" onClick={() => View.redirect(DashboardView.getInstance())}>CH</h1>
-                                {Array.from(links).map(([name, navigate]) => <button className="nav-btn" onClick={navigate}>{name}</button>)}
-                                <button className="nav-btn">Settings</button>
-                            </div>
-                        </div>
+                        <SidebarView />
                         <div className="col-lg-10 p-lg-5 p-4">
-                            {body}
+                            <Outlet />
                         </div>
                     </div>
                 </div>
@@ -54,4 +28,25 @@ function App() {
     );
 }
 
-export default App
+function App() {
+    return (
+        <Provider store={store}>
+            <Routes>
+                <Route element={<Layout />}>
+                    <Route path="/" element={<DashboardView />} />
+                    <Route path="courses">
+                        <Route index element={<NotFoundView />} />
+                        <Route path=":id" element={<CourseView />} />
+                        <Route path=":id/assignments" element={<CourseAssignmentListView />} />
+                        <Route path=":id/assignments/:aid" element={<CourseAssignmentView />} />
+                        <Route path=":id/integrations" element={<CourseIntegrationListView />} />
+                    </Route>
+                    <Route path="*" element={<NotFoundView />} />
+                </Route>
+                <Route path="login" element={<LoginView />} />
+            </Routes>
+        </Provider>
+    );
+}
+
+export default App;

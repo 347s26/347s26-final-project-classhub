@@ -7,3 +7,4 @@ django-ninja
 psycopg~=3.1
 selenium
 jsonpickle~=4.1.1
+django-allauth[socialaccount]~=65.15.0

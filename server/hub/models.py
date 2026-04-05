@@ -69,8 +69,15 @@ class Assignment(models.Model):
     def __str__(self) -> str:
         return repr(self)
 
-class Integration(models.Model):
+class AssignmentIntegration(models.Model):
     assignment: models.ForeignKey[Assignment] = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
+    instance: models.ForeignKey[CourseInstance] = models.ForeignKey(CourseInstance, on_delete=models.CASCADE, null=False)
 
-class CanvasIntegration(Integration):
+class CanvasAssignmentIntegration(AssignmentIntegration):
+    external_id: models.IntegerField[int, int] = models.IntegerField(null=False)
+
+class CourseIntegration(models.Model):
+    course: models.ForeignKey[CourseInstance] = models.ForeignKey(CourseInstance, on_delete=models.CASCADE, null=False)
+
+class CanvasCourseIntegration(CourseIntegration):
     external_id: models.IntegerField[int, int] = models.IntegerField(null=False)

@@ -1,17 +1,8 @@
 import { useState } from "react";
-import "./scss/Login.scss"
-
+import "../scss/Login.scss"
 // import * as bootstrap from 'bootstrap'
 
-export function LoginTitle() {
-    return (
-        <>
-            <h1 className="text-center">ClassHub</h1>
-        </>
-    );
-}
-
-export function LoginDialog() {
+export function LoginView() {
     const [emailAddress, setEmailAddress] = useState("");
 
     function changeEmailAddress(ev: React.ChangeEvent<HTMLInputElement>) {
@@ -25,7 +16,8 @@ export function LoginDialog() {
     }
 
     return (
-        <>
+        <main className="login-main">
+            <h1 className="text-center">ClassHub</h1>
             <form className="login-form" onSubmit={login}>
                 <div className="mb-3">
                     <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
@@ -37,6 +29,6 @@ export function LoginDialog() {
                 </div>
                 <button type="submit" className="btn btn-primary">Login</button>
             </form>
-        </>
+        </main>
     );
 }

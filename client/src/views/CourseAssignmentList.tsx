@@ -1,10 +1,9 @@
-import type { JSX } from "react";
-import { View } from "./View";
-import { CourseInstance } from "../Model";
-import { CourseView } from "./Course";
-import { ErrorView } from "./Error";
+import { useEffect, useState } from "react";
 import "../scss/Course.scss";
-import { CourseAssignmentView } from "./CourseAssignment";
+import { useNavigate, useParams } from "react-router";
+import { useDispatch } from "react-redux";
+import { setRoutes } from "../components/Sidebar";
+import { CourseInstance } from "../models/CourseInstance";
 
 function fmtDate(date: Date): string {
     return date.toLocaleDateString(undefined, {
@@ -33,51 +32,65 @@ function dateComparator(a: Date | null, b: Date | null): number {
         return 0;
 }
 
-export class CourseAssignmentListView extends View {
+interface CourseAssignmentListParams {
     id: number;
+}
 
-    constructor(id: number) {
-        super("Course Assignments", `/courses/${id}/assignments`, CourseAssignmentListView.links(id));
-        this.id = id;
+export function CourseAssignmentListView() {
+    function getParams() {
+        const { id } = useParams();
+        return {
+            id: id ? parseInt(id) : null
+        } as CourseAssignmentListParams;
     }
 
-    async render(): Promise<JSX.Element> {
-        const course = await CourseInstance.from(this.id);
-        const content = await course?.getCourseContent();
-        const assignments = (await content?.getAssignments())
-            ?.toSorted((a, b) => dateComparator(b.due_date, a.due_date));
-        if (!course || !content || !assignments)
-        {
-            View.redirect(new ErrorView("Cannot connect to server"));
-            return <></>;
-        }
+    const { id } = getParams();
+    if (!id)
+        return <div>No course ID provided</div>;
 
-        const assignmentRenders = assignments.map(assignment => (
-            <div className="assignment" onClick={() => View.redirect(new CourseAssignmentView(this.id, assignment.id))}>
-                <div className="container-fluid p-0">
-                    <div className="row d-flex align-items-center">
-                        <div className="col-lg-8 col">
-                            <h3 className="fs-4 mb-0">{assignment.title}</h3>
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    dispatch(setRoutes(new Map<string, string>([
+        ["Overview", `/courses/${id}`],
+        ["Assignments", `/courses/${id}/assignments`],
+        ["Integrations", `/courses/${id}/integrations`]
+    ])));
+
+    const [course, setCourse] = useState<CourseInstance | null>(null);
+
+    useEffect(() => {
+        async function _() {
+            const course = await CourseInstance.from(id);
+            const content = await course?.getCourseContent();
+            await content?.getAssignments();
+            setCourse(course);
+        }
+        _();
+        return () => {};
+    }, []);
+
+    const content = course?.getCourseContentSync();
+    const assignments = content?.getAssignmentsSync()
+        ?.toSorted((a, b) => dateComparator(b.due_date, a.due_date));
+    if (!content || !assignments)
+        return <div>Unable to retrieve assignment list</div>;
+
+    return (
+        <>
+            <h2 className="mb-lg-5 mb-3">Assignments</h2>
+            {assignments.map(assignment => (
+                <div className="assignment" onClick={() => navigate(`/courses/${id}/assignments/${assignment.id}`)}>
+                    <div className="container-fluid p-0">
+                        <div className="row d-flex align-items-center">
+                            <div className="col-lg-8 col">
+                                <h3 className="fs-4 mb-0">{assignment.title}</h3>
+                            </div>
+                            <div className="col-lg-4 col text-end">Due: {assignment.due_date ? fmtDate(assignment.due_date) : ""}</div>
                         </div>
-                        <div className="col-lg-4 col text-end">Due: {assignment.due_date ? fmtDate(assignment.due_date) : ""}</div>
                     </div>
                 </div>
-            </div>
-        ));
-
-
-        return (
-            <>
-                <h2 className="mb-lg-5 mb-3">Assignments</h2>
-                {assignmentRenders}
-            </>
-        );
-    }
-
-    private static links(id: number): Map<string, () => void> {
-        const links = new Map<string, () => void>();
-        links.set("Overview", () => View.redirect(new CourseView(id)));
-        links.set("Assignments", () => View.redirect(new CourseAssignmentListView(id)));
-        return links;
-    }
+            ))}
+        </>
+    );
 }

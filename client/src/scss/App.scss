@@ -38,13 +38,23 @@ $utilities: map-merge(
     @extend .main;
 }
 
+.button-link {
+    text-decoration-line: none;
+    display: flex;
+}
+
 .title {
-    @extend .text-center, .p-lg-3, .p-2, .pt-3, .h1, .m-0;
+    @extend .text-center, .p-lg-3, .p-2, .pt-3, .h1, .m-0, .button-link;
+    display: block;
     cursor: pointer;
 }
 
 .title:hover {
     color: color.scale($body-color-dark, $lightness: -30%);
+}
+
+.page-content {
+    @extend .col-lg-10, .p-lg-5, .p-4;
 }
 
 .nav-btn {

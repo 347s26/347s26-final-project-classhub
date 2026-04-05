@@ -1,43 +1,58 @@
-import type { JSX } from "react";
-import { View } from "./View";
-import { CourseView } from "./Course";
-import { CourseAssignmentListView } from "./CourseAssignmentList";
-import { Assignment, CourseInstance } from "../Model";
-import { ErrorView } from "./Error";
+import { useEffect, useState } from "react";
 import { EditableMarkdown } from "../components/EditableMarkdown";
 import { EditableText } from "../components/EditableText";
+import { useParams } from "react-router";
+import { useDispatch } from "react-redux";
+import { setRoutes } from "../components/Sidebar";
+import { CourseInstance } from "../models/CourseInstance";
+import { Assignment } from "../models/Assignment";
 
-export class CourseAssignmentView extends View {
+export interface CourseAssignmentParams {
     id: number;
-    cid: number;
+    aid: number;
+}
 
-    constructor(id: number, cid: number) {
-        super("Course Assignment", `/courses/${cid}/assignments/${id}`, CourseAssignmentView.links(id, cid));
-        this.id = id;
-        this.cid = cid;
+export function CourseAssignmentView() {
+    function getParams() {
+        const { id, aid } = useParams();
+        return {
+            id: id ? parseInt(id) : null,
+            aid: aid ? parseInt(aid) : null
+        } as CourseAssignmentParams;
     }
+    const { id, aid } = getParams();
+    if (!id || !aid)
+        return <div>Identifiers are malformed</div>;
 
-    async render(): Promise<JSX.Element> {
-        const course = await CourseInstance.from(this.cid);
-        const assignment = await Assignment.from(this.id);
-        if (!course || !assignment)
-        {
-            View.redirect(new ErrorView(`Unable to fetch assignment ID ${this.id}`));
-            return <></>;
+    const dispatch = useDispatch();
+
+    dispatch(setRoutes(new Map<string, string>([
+        ["Overview", `/courses/${id}`],
+        ["Assignments", `/courses/${id}/assignments`],
+        ["Integrations", `/courses/${id}/integrations`]
+    ])));
+
+    const [course, setCourse] = useState<CourseInstance | null>(null);
+    const [assignment, setAssignment] = useState<Assignment | null>(null); 
+
+    useEffect(() => {
+        async function _() {
+            const course = await CourseInstance.from(id);
+            const assignment = await Assignment.from(aid);
+            setCourse(course);
+            setAssignment(assignment);
         }
+        _();
+        return () => {};
+    }, []);
 
-        return (
-            <>
-                <EditableText name="Title" content={assignment.title} inline={false} className="h2" save={async (c: string) => { assignment.title = c; return await assignment.save(); }} />
-                <EditableMarkdown name="Description" content={assignment.description} save={async (c: string) => { assignment.description = c; return await assignment.save(); }} />
-            </>
-        );
-    }
+    if (!course || !assignment)
+        return <div>Unable to retrieve assignment</div>;
 
-    private static links(id: number, _: number): Map<string, () => void> {
-        const links = new Map<string, () => void>();
-        links.set("Overview", () => View.redirect(new CourseView(id)));
-        links.set("Assignments", () => View.redirect(new CourseAssignmentListView(id)));
-        return links;
-    }
+    return (
+        <>
+            <EditableText name="Title" content={assignment.title} inline={false} className="h2" save={async (c: string) => { assignment.title = c; return await assignment.save(); }} />
+            <EditableMarkdown name="Description" content={assignment.description} save={async (c: string) => { assignment.description = c; return await assignment.save(); }} />
+        </>
+    );
 }
