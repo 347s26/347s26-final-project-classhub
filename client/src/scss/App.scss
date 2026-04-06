@@ -5,12 +5,20 @@ $utilities: map-merge(
   $utilities,
   (
     "width": map-merge(
-      map-get($utilities, "width"),
-      ( responsive: true ),
+        map-get($utilities, "width"),
+        ( responsive: true ),
     ),
     "height": map-merge(
-      map-get($utilities, "height"),
-      ( responsive: true ),
+        map-get($utilities, "height"),
+        ( responsive: true ),
+    ),
+    "min-viewport-height": map-merge(
+        map-get($utilities, "min-viewport-height"),
+        ( responsive: true ),
+    ),
+    "border-end": map-merge(
+        map-get($utilities, "border-end"),
+        ( responsive: true ),
     ),
   )
 );
@@ -32,6 +40,14 @@ $utilities: map-merge(
     display: flex;
     justify-content: center;
     flex-direction: column;
+}
+
+.landing-main {
+    @extend .main;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .default-main {

@@ -35,9 +35,9 @@ export function SidebarView() {
 
     return (
         <>
-            <div className="sidebar col-lg-2 h-lg-100 p-0 border-end">
+            <div className="sidebar min-vh-lg-100 col-lg-2 p-0 border-end-lg border-bottom">
                 <div className="d-flex flex-column justify-content-center">
-                    <h1 onClick={() => navigate("/")} className="title">CH</h1>
+                    <h1 onClick={() => navigate("/dashboard")} className="title">CH</h1>
                     {Array.from(routes).map(([name, route]) => <Link to={route} className="nav-btn">{name}</Link>)}
                     <button className="nav-btn">Preferences</button>
                     <button className="nav-btn" onClick={() => navigate("/logout")}>Logout</button>

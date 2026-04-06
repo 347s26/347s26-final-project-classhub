@@ -3,7 +3,7 @@
 ## Basic Claims
  - [x] Application has a front page
  - [x] Application has navigation - Menu or navigation system linking multiple pages
- - [ ] Application uses Django admin interface - Admin panel accessible and functional for all models
+ - [x] Application uses Django admin interface - Admin panel accessible and functional for all models
  - [x] Application has 3 distinct models - At least three different Django models with appropriate fields, other than User
  - [x] Models are stored in database - Data persists between sessions using Django ORM
  - [x] Application handles 404 errors gracefully - Custom 404 page or appropriate error handling
@@ -21,17 +21,17 @@
  - [x] Delete functionality works - Users can remove records through the web interface
  - [x] Application has user login/logout - Users can sign in and out of the system
  - [x] Application enforces authentication - Some pages require login to access
- - [ ] Application has basic security measures - CSRF protection and secure forms
+ - [x] Application has basic security measures - CSRF protection and secure forms
 
 ## Intermediate Claims
  - [ ] Application has pagination
- - [ ] Application validates user input
- - [ ] Application has data import/export
+ - [x] Application validates user input
+ - [ ] Application has search functionality
  - [ ] Application integrates external API
  - [x] Application provides its own API
  - [ ] Application is mobile-responsive (375px screen width)
  - [ ] Application has advanced forms
- - [ ] Application has data visualization
+ - [ ] Application has bulk operations
 
 ## Stretch Claims
  - [x] Application uses a frontend framework

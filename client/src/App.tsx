@@ -1,5 +1,4 @@
 import "./scss/App.scss"
-import { DashboardView } from "./views/Dashboard";
 import { Provider } from "react-redux";
 import store from "./store";
 import { Outlet, Route, Routes } from "react-router";
@@ -13,13 +12,16 @@ import { LoginView } from "./views/Login";
 import { SignupView } from "./views/Signup";
 import { LogoutView } from "./views/Logout";
 import { CourseSettingsView } from "./views/CourseSettings";
+import { DashboardView } from "./views/Dashboard";
+import { LandingView } from "./views/Landing";
+import { CourseCreatorView } from "./views/CourseCreator";
 
 function Layout() {
     return (
         <>
             <main className="default-main">
-                <div className="container-fluid h-lg-100">
-                    <div className="row h-lg-100">
+                <div className="container-fluid">
+                    <div className="row">
                         <SidebarView />
                         <div className="col-lg-10 p-lg-5 p-4">
                             <Outlet />
@@ -45,9 +47,10 @@ function App() {
         <Provider store={store}>
             <Routes>
                 <Route element={<Layout />}>
-                    <Route path="/" element={<DashboardView />} />
+                    <Route path="dashboard" element={<DashboardView />} />
                     <Route path="courses">
                         <Route index element={<NotFoundView />} />
+                        <Route path="new" element={<CourseCreatorView />} />
                         <Route path=":id" element={<CourseView />} />
                         <Route path=":id/settings" element={<CourseSettingsView />} />
                         <Route path=":id/assignments" element={<CourseAssignmentListView />} />
@@ -55,10 +58,11 @@ function App() {
                         <Route path=":id/integrations" element={<CourseIntegrationListView />} />
                     </Route>
                     <Route path="logout" element={<LogoutView />} />
-                    <Route path="*" element={<NotFoundView />} />
                 </Route>
+                <Route path="/" element={<LandingView />} />
                 <Route path="login" element={<LoginView />} />
                 <Route path="signup" element={<SignupView />} />
+                <Route path="*" element={<NotFoundView />} />
             </Routes>
         </Provider>
     );

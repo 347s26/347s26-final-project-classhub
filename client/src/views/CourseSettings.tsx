@@ -65,7 +65,7 @@ export function CourseSettingsView() {
             const courseDeleter = document.getElementById(courseDeleterID) as HTMLElement;
             const modal = bootstrap.Modal.getOrCreateInstance(courseDeleter) as bootstrap.Modal;
             modal.hide();
-            navigate("/");
+            navigate("/dashboard");
         }
         else
             toastify("Couldn't delete the course", "Error");
@@ -73,7 +73,7 @@ export function CourseSettingsView() {
 
     return (
         <>
-            <h2 className="mb-lg-5 mb-1">Settings</h2>
+            <h2 className="mb-lg-5 mb-4">Settings</h2>
             <h3 className="fs-4 mb-3">Danger Zone</h3>
             <button className="btn btn-danger" onClick={openCourseDeleter}>Delete</button>
             <Confirmer id={courseDeleterID} actionDescription="delete the course" action={courseDeleter} />

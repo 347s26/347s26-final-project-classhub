@@ -9,7 +9,7 @@ export function LoginView() {
 
     useEffect(() => {
         if (localStorage.getItem("session"))
-            navigate("/");
+            navigate("/dashboard");
         return () => {};
     }, []);
 
@@ -40,14 +40,14 @@ export function LoginView() {
         const result = await login(emailAddress, password);
         if (!result.token)
         {
-            const err = result.errors[0].message;
+            const err = `${result.errors[0].message} (on ${result.errors[0].param})`;
             const toast = bootstrap.Toast.getOrCreateInstance(toastElement);
             toastContent.innerText = err;
             toast?.show();
             return;
         }
         localStorage.setItem("session", result.token);
-        navigate("/");
+        navigate("/dashboard");
     }
 
     return (
