@@ -6,6 +6,7 @@ export interface RawCourseContent extends RawResponse {
     fields: {
         course: number;
         parent: number;
+        title: string;
         overview: string;
         syllabus: string;
         assignments: number[];
@@ -19,6 +20,7 @@ export class CourseContent extends Model {
     private parent_id: number;
     private assignment_ids: number[];
     private assignments: Assignment[] | null;
+    title: string;
     overview: string;
     syllabus: string;
 
@@ -30,6 +32,7 @@ export class CourseContent extends Model {
         this.parent_id = raw.fields.parent;
         this.assignment_ids = raw.fields.assignments;
         this.overview = raw.fields.overview;
+        this.title = raw.fields.title;
         this.syllabus = raw.fields.syllabus;
         this.assignments = null;
     }
@@ -92,6 +95,7 @@ export class CourseContent extends Model {
                             course_id: this.course_id,
                             parent_id: this.parent_id,
                             assignment_ids: this.assignment_ids,
+                            title: this.title,
                             overview: this.overview,
                             syllabus: this.syllabus
                         }
@@ -106,5 +110,33 @@ export class CourseContent extends Model {
             return false;
         }
         return true;
+    }
+
+    async loadAssociatedObjects(): Promise<boolean> {
+        return [await this.getCourse(),
+            await this.getAssignments()]
+            .every(it => it != null);
+    }
+
+    static async all(limit: number = 10, offset: number = 0, query: string | null = null): Promise<CourseContent[] | null> {
+        let raw: RawCourseContent[] | null = null;
+        try
+        {
+            const resp = await fetch(`${API_URL}/contents?limit=${limit}&offset=${offset}${query ? `&query=${encodeURIComponent(query)}` : ""}`);
+            if (!resp.ok)
+                return null;
+            raw = (await resp.json())["data"];
+        }
+        catch
+        {
+            return null;
+        }
+        if (!raw) return null;
+        return raw.map(r => new CourseContent(r));
+    }
+
+    toString(): string {
+        const course = this.getCourseSync();
+        return (course ? `${course.department_code} ${course.number}` : "(unloaded course)") + `: ${this.title}`;
     }
 }

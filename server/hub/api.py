@@ -1,4 +1,5 @@
 import datetime
+from django.contrib.auth.models import User
 from django.db import models
 from ninja import NinjaAPI, Schema
 from ninja.security import django_auth
@@ -14,8 +15,8 @@ api = NinjaAPI()
 def test(request: WSGIRequest, a: int, b: int):  # pyright: ignore[reportUnusedParameter]
     return { "data": a + b }
 
-@api.get("/courses", auth=[django_auth, x_session_token_auth])
-def courses(request: WSGIRequest):
+@api.get("/me/courses", auth=[django_auth, x_session_token_auth])
+def user_courses(request: WSGIRequest):
     uid: int = request.auth.id   # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue, reportUnknownVariableType]
     courses = CourseInstance.objects.filter(instructors__id__exact=uid)
     return { "data": json.loads(serializers.serialize("json", courses)) }  # pyright: ignore[reportAny]
@@ -98,15 +99,25 @@ def put_assignment(request: WSGIRequest, pk: int, upload: UploadAssignment):
     assignment.save()
     return dict[str, None]({})
 
-@api.post("/course")
-def post_course(request: WSGIRequest):
-    course = CourseInstance.objects.create()
+class CreateCourseInstanceSchema(Schema):
+    course_content: int
+    semester: int
+    year: int
+    section_number: int
+
+
+@api.post("/course", auth=[django_auth, x_session_token_auth])
+def post_course(request: WSGIRequest, body: CreateCourseInstanceSchema):
+    uid: int = request.auth.id  # pyright: ignore[reportUnknownMemberType, reportAttributeAccessIssue, reportUnknownVariableType]
+    course = CourseInstance.objects.create(
+        course_content_id=body.course_content,
+        semester=CourseInstance.Semester(body.semester),
+        year=body.year,
+        section_number=body.section_number
+    )
+    course.instructors.add(User.objects.get(id=uid))
     course.save()
-    return {
-        "data": [
-            course
-        ]
-    }
+    return { "data": json.loads(serializers.serialize("json", [course])) }  # pyright: ignore[reportAny]
 
 @api.delete("/course/{pk}")
 def delete_course(request: WSGIRequest, pk: int):
@@ -118,3 +129,30 @@ def delete_course(request: WSGIRequest, pk: int):
     if amt == 0:
         return 404, { "message": f"No CourseInstance object with an ID {pk} exists" }
     return dict[str, None]({})
+
+@api.delete("/assignment/{pk}")
+def delete_assignment(request: WSGIRequest, pk: int):
+    try:
+        assignment = Assignment.objects.get(id=pk)
+    except models.Model.DoesNotExist:
+        return 404, { "message": f"No Assignment object with an ID {pk} exists" }
+    amt, fields = assignment.delete()  # pyright: ignore[reportUnusedVariable]
+    if amt == 0:
+        return 404, { "message": f"No Assignment object with an ID {pk} exists" }
+    return dict[str, None]({})
+
+@api.get("/contents")
+def all_course_content(request: WSGIRequest, limit: int = 10, offset: int = 0, query: str | None = None):
+    qs = CourseContent.objects.all()
+    if query is not None:
+        qs = qs.filter(title__icontains=query)
+    qs = qs[offset:offset+limit]
+    return { "data": json.loads(serializers.serialize("json", qs)) }  # pyright: ignore[reportAny]
+
+@api.get("/courses")
+def all_course(request: WSGIRequest, limit: int = 10, offset: int = 0, query: str | None = None):
+    qs = Course.objects.all()
+    if query is not None:
+        qs = qs.filter(title__icontains=query)
+    qs = qs[offset:offset+limit]
+    return { "data": json.loads(serializers.serialize("json", qs)) }  # pyright: ignore[reportAny]

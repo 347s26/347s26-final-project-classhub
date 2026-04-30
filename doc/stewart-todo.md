@@ -9,10 +9,8 @@
  - [x] Application handles 404 errors gracefully - Custom 404 page or appropriate error handling
  - [x] Models have meaningful relationships - Foreign keys, many-to-many, or one-to-one relationships implemented
  - [x] Application has proper URL routing - Clean, meaningful URLs using Django's URL patterns
- - [x] Application uses Django templates - HTML rendered using Django's template system
-    - Irrelevant, app does not use templates for frontend
- - [x] Templates use template inheritance - Base template with child templates extending it
-    - Irrelevant, app does not use templates for frontend
+ - [ ] Application uses Django templates - HTML rendered using Django's template system
+ - [ ] Templates use template inheritance - Base template with child templates extending it
  - [x] Application has consistent styling - CSS applied across multiple pages with cohesive design
  - [x] Forms are styled and user-friendly - Form inputs have labels, styling, and clear layout
  - [x] Create functionality works - Users can add new records through the web interface
@@ -24,15 +22,15 @@
  - [x] Application has basic security measures - CSRF protection and secure forms
 
 ## Intermediate Claims
- - [x] Application has pagination
- - [x] Application validates user input
- - [x] Application has search functionality
+ - [ ] Application has pagination
+ - [ ] Application validates user input
+ - [ ] Application has search functionality
  - [ ] Application integrates external API
  - [x] Application provides its own API
- - [x] Application is mobile-responsive (375px screen width)
- - [x] Application has advanced forms
- - [x] Application has bulk operations
- - [x] Application has in-app documentation
+ - [ ] Application is mobile-responsive (375px screen width)
+ - [ ] Application has advanced forms
+ - [ ] Application has bulk operations
+ - [ ] Application has in-app documentation
 
 ## Stretch Claims
  - [x] Application uses a frontend framework

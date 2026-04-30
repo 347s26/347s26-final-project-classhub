@@ -32,7 +32,7 @@ export function DashboardView() {
         <>
             <div className="d-flex align-items-center mb-4">
                 <h2 className="mb-0">Courses</h2>
-                <button className="edit-btn ms-3">New</button>
+                <button className="edit-btn ms-3" onClick={() => navigate("/courses/new")}>New</button>
             </div>
             <div className="course-cards">
                 {courses?.map(course => {

@@ -1,4 +1,4 @@
-import { API_URL, Model, type RawResponse } from "./Models";
+import { API_URL, Model, type RawResponse, type RelatedObject } from "./Models";
 
 export interface RawAssignment extends RawResponse {
     fields: {
@@ -8,7 +8,7 @@ export interface RawAssignment extends RawResponse {
     };
 }
 
-export class Assignment extends Model {
+export class Assignment extends Model implements RelatedObject {
     id: number;
     title: string;
     description: string;
@@ -39,6 +39,14 @@ export class Assignment extends Model {
         return new Assignment(raw);
     }
 
+    async delete(): Promise<boolean> {
+        const resp = await fetch(`${API_URL}/assignment/${this.id}`, {
+            method: "DELETE"
+        });
+
+        return resp.ok;
+    }
+
     async save(): Promise<boolean> {
         try
         {
@@ -63,5 +71,9 @@ export class Assignment extends Model {
             return false;
         }
         return true;
+    }
+
+    async loadAssociatedObjects(): Promise<boolean> {
+        return false;
     }
 }

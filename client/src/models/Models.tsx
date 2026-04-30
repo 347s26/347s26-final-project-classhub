@@ -14,6 +14,11 @@ export interface RawResponse {
     pk: number;
 }
 
+export interface RelatedObject {
+    toString(): string;
+    loadAssociatedObjects?: () => Promise<boolean>;
+}
+
 export abstract class Model {
     abstract save(): Promise<boolean>;
 }
@@ -25,7 +30,7 @@ export async function getCourses(): Promise<CourseInstance[] | null> {
     let raw: RawCourseInstance[] | null = null;
     try
     {
-        let req = await fetch(`${API_URL}/courses`, {
+        let req = await fetch(`${API_URL}/me/courses`, {
             method: "GET",
             headers: {
                 "X-Session-Token": token
@@ -126,4 +131,8 @@ export async function probe(token: string): Promise<boolean> {
         }
     });
     return req.ok;
+}
+
+export async function getCSRFToken(): Promise<string | null> {
+    return (await cookieStore.get("csrftoken"))?.value ?? null;
 }

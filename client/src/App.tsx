@@ -15,6 +15,7 @@ import { CourseSettingsView } from "./views/CourseSettings";
 import { DashboardView } from "./views/Dashboard";
 import { LandingView } from "./views/Landing";
 import { CourseCreatorView } from "./views/CourseCreator";
+import { DisconnectedView } from "./views/Disconnected";
 
 function Layout() {
     return (
@@ -60,6 +61,7 @@ function App() {
                     <Route path="logout" element={<LogoutView />} />
                 </Route>
                 <Route path="/" element={<LandingView />} />
+                <Route path="/disconnected" element={<DisconnectedView />} />
                 <Route path="login" element={<LoginView />} />
                 <Route path="signup" element={<SignupView />} />
                 <Route path="*" element={<NotFoundView />} />

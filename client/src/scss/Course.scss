@@ -5,8 +5,13 @@
 }
 
 .assignment {
-    @extend .d-block, .p-3, .px-4, .border, .rounded;
+    @extend .d-block, .p-3, .px-4, .border, .rounded, .mb-3;
     cursor: pointer;
+}
+
+.assignment-unclickable {
+    @extend .assignment;
+    cursor: auto;
 }
 
 .assignment:hover {

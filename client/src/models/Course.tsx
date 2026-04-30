@@ -1,4 +1,4 @@
-import { API_URL, Model, type RawResponse } from "./Models";
+import { API_URL, Model, type RawResponse, type RelatedObject } from "./Models";
 
 export interface RawCourse extends RawResponse {
     fields: {
@@ -8,7 +8,7 @@ export interface RawCourse extends RawResponse {
     };
 }
 
-export class Course extends Model {
+export class Course extends Model implements RelatedObject {
     private static CACHE: Map<number, Course> = new Map();
 
     id: number;
@@ -47,5 +47,30 @@ export class Course extends Model {
 
     async save(): Promise<boolean> {
         return false;
+    }
+
+    async loadAssociatedObjects(): Promise<boolean> {
+        return true;
+    }
+
+    static async all(limit: number = 10, offset: number = 0, query: string | null = null): Promise<Course[] | null> {
+        let raw: RawCourse[] | null = null;
+        try
+        {
+            const resp = await fetch(`${API_URL}/courses?limit=${limit}&offset=${offset}${query ? `&query=${encodeURIComponent(query)}` : ""}`);
+            if (!resp.ok)
+                return null;
+            raw = (await resp.json())["data"];
+        }
+        catch
+        {
+            return null;
+        }
+        if (!raw) return null;
+        return raw.map(r => new Course(r));
+    }
+
+    toString(): string {
+        return `${this.department_code} ${this.number}: ${this.title}`;
     }
 }

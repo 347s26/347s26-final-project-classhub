@@ -1,4 +1,5 @@
 @use "sass:color";
+@import "bootstrap-icons/font/bootstrap-icons";
 @import "bootstrap/scss/bootstrap";
 
 $utilities: map-merge(
@@ -107,4 +108,8 @@ $utilities: map-merge(
 .et-preview:hover {
     cursor: pointer;
     color: color.scale($body-color-dark, $lightness: -30%);
+}
+
+.info-circle {
+    cursor: pointer;
 }

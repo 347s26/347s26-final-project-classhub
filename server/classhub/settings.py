@@ -36,8 +36,16 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_HEADERS = [
-    "x-session-token"
+    "x-session-token",
+    "x-csrftoken"
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173"
+]
+
 
 # Application definition
 

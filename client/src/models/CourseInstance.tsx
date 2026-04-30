@@ -1,6 +1,6 @@
 import type { Course } from "./Course";
 import { CourseContent } from "./CourseContent";
-import { API_URL, Model, type RawResponse } from "./Models";
+import { API_URL, getCSRFToken, Model, type RawResponse } from "./Models";
 
 export interface RawCourseInstance extends RawResponse {
     fields: {
@@ -82,9 +82,19 @@ export class CourseInstance extends Model {
         return instance;
     }
 
-    static async make(course_content_id: number, semester: Semester, year: number, section_number: number): Promise<CourseInstance | null> {
+    static async make(course_content_id: number, semester: number, year: number, section_number: number): Promise<CourseInstance | null> {
+        const token = localStorage.getItem("session");
+        const csrfToken = await getCSRFToken();
+        if (!token || !csrfToken)
+            return null;
+        
         const resp = await fetch(`${API_URL}/course`, {
             method: "POST",
+            headers: {
+                "X-Session-Token": token,
+                "X-CSRFToken": csrfToken
+            },
+            credentials: "include",
             body: JSON.stringify({
                 course_content: course_content_id,
                 semester: semester,
@@ -110,6 +120,10 @@ export class CourseInstance extends Model {
     }
 
     async save(): Promise<boolean> {
+        return false;
+    }
+
+    async loadAssociatedObjects(): Promise<boolean> {
         return false;
     }
 }

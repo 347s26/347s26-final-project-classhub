@@ -19,6 +19,7 @@ class Course(models.Model):
 class CourseContent(models.Model):
     course: models.ForeignKey[Course] = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
     parent: models.ForeignKey["CourseContent"] = models.ForeignKey("CourseContent", on_delete=models.DO_NOTHING, null=True, blank=True)
+    title: models.CharField[str, str] = models.CharField(max_length=200, null=False)
     overview: models.CharField[str, str] = models.CharField(max_length=10000, null=True)
     syllabus: models.CharField[str, str] = models.CharField(max_length=50000, null=True)
     
@@ -26,7 +27,7 @@ class CourseContent(models.Model):
 
     @override
     def __repr__(self) -> str:
-        return f"CourseContent{{course={self.course}, parent={self.parent}, assignments={self.assignments}}}"
+        return f"CourseContent{{title={self.title} course={self.course}, parent={self.parent}, assignments={self.assignments}}}"
 
     @override
     def __str__(self) -> str:
@@ -50,7 +51,7 @@ class CourseInstance(models.Model):
 
     @override
     def __repr__(self) -> str:
-        return f"CourseInstance{{course_content={self.course_content}, semester={self.semester}, year={self.year}, section_number={self.section_number}, instructors={self.instructors}}}"
+        return f"CourseInstance{{course_content={self.course_content}, semester={self.semester}, year={self.year}, section_number={self.section_number}}}"
 
     @override
     def __str__(self) -> str:
