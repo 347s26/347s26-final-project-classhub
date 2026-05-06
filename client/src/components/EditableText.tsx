@@ -14,10 +14,7 @@ export function EditableText({ name, content, inline = false, className = "", sa
         const editor = document.getElementById(editorID);
         const preview = document.getElementById(previewID);
         if (!editor || !preview)
-        {
-            console.log("bad");
             return;
-        }
         editor.style.display = "flex";
         preview.style.display = "none";
     }
